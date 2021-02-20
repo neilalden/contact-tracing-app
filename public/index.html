@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- imports -->
+		<script defer src="/__/firebase/8.2.7/firebase-app.js"></script>
+		<script defer src="/__/firebase/8.2.7/firebase-auth.js"></script>
+		<script defer src="/__/firebase/8.2.7/firebase-firestore.js"></script>
+		<!-- <script defer src="/__/firebase/8.2.7/firebase-functions.js"></script> -->
+		<!-- <script defer src="/__/firebase/8.2.7/firebase-storage.js"></script> -->
+		<script defer src="/__/firebase/init.js?useEmulator=true"></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js"
+			integrity="sha384-nsg8ua9HAw1y0W1btsyWgBklPnCUAFLuTMS2G72MMONqmOymq585AcH49TLBQObG"
+			crossorigin="anonymous"
+		></script>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+			crossorigin="anonymous"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+		/>
+		<!-- imports -->
+		<link rel="shortcut icon" href="src/user.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="style.css" />
+		<title>Contact Tracing App</title>
+	</head>
+	<body>
+		<section id="particles-js" style="display: block">
+			<div id="sign-in-container" class="card position-absolute">
+				<p class="display-4 py-4 text-light">Contact Tracing App</p>
+				<form action="" class="w-75 mx-auto">
+					<div class="form-floating mb-3">
+						<input
+							type="email"
+							class="form-control"
+							id="email-sign-in"
+							placeholder="Email address"
+						/>
+						<label for="email-sign-in">Email address</label>
+					</div>
+					<div class="form-floating">
+						<input
+							type="password"
+							class="form-control"
+							id="password-sign-in"
+							placeholder="Password"
+						/>
+						<label for="password-sign-in">Password</label>
+					</div>
+					<div class="d-flex my-3">
+						<div class="mx-auto">
+							<button
+								type="button"
+								onclick="signIn()"
+								class="btn btn-primary p-2"
+							>
+								sign in
+							</button>
+						</div>
+						<div class="mx-auto">
+							<button
+								type="button"
+								onclick="showSignUp()"
+								class="btn btn-outline-light p-2"
+							>
+								sign up
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</section>
+		<!-- -------------------------------- -->
+		<section id="sign-up-page" class="w-100 h-100">
+			<span
+				onclick="returnHome()"
+				style="cursor: pointer; height: 20px; width: 20px; margin: 5px"
+				><i class="bi bi-arrow-left-square-fill fs-4"></i
+			></span>
+			<p class="display-6 text-center mt-4">Account Type :</p>
+			<div class="d-flex justify-content-center">
+				<div
+					style="width: 200px"
+					class="btn-group"
+					role="group"
+					aria-label="Basic radio toggle button group"
+				>
+					<input
+						type="radio"
+						value="individual"
+						class="btn-check"
+						name="acc-type-radio"
+						id="individual-acc-btn"
+						autocomplete="off"
+						checked
+					/>
+					<label class="btn btn-outline-primary" for="individual-acc-btn"
+						>Individual</label
+					>
+
+					<input
+						type="radio"
+						value="business"
+						class="btn-check"
+						name="acc-type-radio"
+						id="business-acc-btn"
+						autocomplete="off"
+					/>
+					<label class="btn btn-outline-primary" for="business-acc-btn"
+						>Business</label
+					>
+				</div>
+			</div>
+			<form action="" class="card m-4">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="text"
+									class="form-control sign-up-input"
+									id="firstname-sign-up-input"
+									placeholder="First name"
+									required
+								/>
+								<label for="firstname-sign-up-input">First name</label>
+							</div>
+						</div>
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="text"
+									class="form-control sign-up-input"
+									id="lastname-sign-up-input"
+									placeholder="Last name"
+									required
+								/>
+								<label for="lastname-sign-up-input">Last name</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									class="form-control sign-up-input"
+									id="birthday-sign-up-input"
+									type="date"
+									placeholder="dd/mm/yyyy"
+									required
+								/>
+								<label for="birthday-sign-up-input">Birthday</label>
+							</div>
+						</div>
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="text"
+									class="form-control sign-up-input"
+									id="province-sign-up-input"
+									placeholder="Province"
+									required
+								/>
+								<label for="province-sign-up-input">Province</label>
+							</div>
+						</div>
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="text"
+									class="form-control sign-up-input"
+									id="city-sign-up-input"
+									placeholder="City"
+									required
+								/>
+								<label for="city-sign-up-input">City</label>
+							</div>
+						</div>
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="text"
+									class="form-control sign-up-input"
+									id="barangay-sign-up-input"
+									placeholder="Barangay"
+									required
+								/>
+								<label for="barangay-sign-up-input">Barangay</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md my-2">
+							<div class="form-floating mb-3">
+								<input
+									type="email"
+									class="form-control sign-up-input"
+									id="email-sign-up-input"
+									placeholder="name@example.com"
+								/>
+								<label for="email-sign-up-input">Email address</label>
+							</div>
+						</div>
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="password"
+									class="form-control sign-up-input"
+									id="password-sign-up-input"
+									placeholder="Password"
+									required
+								/>
+								<label for="password-sign-up-input">Password</label>
+							</div>
+						</div>
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="password"
+									class="form-control sign-up-input"
+									id="confirm-password-sign-up-input"
+									placeholder="Password"
+									required
+								/>
+								<label for="confirm-password-sign-up-input"
+									>Confirm password</label
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+				<button id="sign-up-btn" class="btn btn-success btn-lg mx-auto mb-2">
+					Sign Up!
+				</button>
+				<button
+					type="button"
+					id="show-qr-code"
+					class="btn btn-link shadow-none mx-auto visually-hidden"
+					style="width: 200px !important"
+					data-bs-toggle="modal"
+					data-bs-target="#exampleModal"
+				>
+					Show QR Code
+				</button>
+				<div
+					class="modal fade"
+					id="exampleModal"
+					tabindex="-1"
+					aria-labelledby="exampleModalLabel"
+					aria-hidden="true"
+					data-bs-backdrop="static"
+					data-bs-keyboard="false"
+				>
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">
+									No one signed up yet
+								</h5>
+								<button
+									type="button"
+									class="btn-close"
+									data-bs-dismiss="modal"
+									aria-label="Close"
+								></button>
+							</div>
+							<div class="modal-body">
+								<div
+									id="qrcode"
+									class="card mx-auto"
+									style="height: 200px; width: 200px; margin: 40px"
+								></div>
+							</div>
+							<div class="modal-footer">
+								<a
+									href="#"
+									class="btn btn-outline-success mx-auto my-2 disabled"
+									id="download-qr-code-btn"
+									style="width: 200px"
+									download
+									>Download QR Code</a
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+			<div class="w-50 h-50 bg-light my-4 mx-auto" id="reader"></div>
+			<br />
+		</section>
+	</body>
+	<script src="src/html5-qrcode.min.js"></script>
+	<script defer src="app.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+	<script src="src/qrcode.min.js"></script>
+</html>
