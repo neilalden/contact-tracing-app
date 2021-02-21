@@ -31,7 +31,16 @@
 		<title>Contact Tracing App</title>
 	</head>
 	<body>
-		<section id="particles-js" style="display: block">
+		<div class="w-100 h-100 loading-screen">
+			<div
+				class="spinner-grow text-primary d-flex justify-content-center loading-screen"
+				style="width: 100px; height: 100px; margin: 20% auto"
+				role="status"
+			>
+				<span class="visually-hidden">Loading...</span>
+			</div>
+		</div>
+		<section id="particles-js">
 			<div id="sign-in-container" class="card position-absolute">
 				<p class="display-4 py-4 text-light">Contact Tracing App</p>
 				<form action="" class="w-75 mx-auto">
@@ -58,7 +67,8 @@
 							<button
 								type="button"
 								onclick="signIn()"
-								class="btn btn-primary p-2"
+								class="btn btn-light p-2"
+								style="color: dodgerblue"
 							>
 								sign in
 							</button>
@@ -81,7 +91,7 @@
 			<span
 				onclick="returnHome()"
 				style="cursor: pointer; height: 20px; width: 20px; margin: 5px"
-				><i class="bi bi-arrow-left-square-fill fs-4"></i
+				><i class="bi bi-arrow-left-square-fill fs-3"></i
 			></span>
 			<p class="display-6 text-center mt-4">Account Type :</p>
 			<div class="d-flex justify-content-center">
@@ -97,6 +107,7 @@
 						class="btn-check"
 						name="acc-type-radio"
 						id="individual-acc-btn"
+						onclick="handleClick(this);"
 						autocomplete="off"
 						checked
 					/>
@@ -110,6 +121,7 @@
 						class="btn-check"
 						name="acc-type-radio"
 						id="business-acc-btn"
+						onclick="handleClick(this);"
 						autocomplete="off"
 					/>
 					<label class="btn btn-outline-primary" for="business-acc-btn"
@@ -117,7 +129,15 @@
 					>
 				</div>
 			</div>
-			<form action="" class="card m-4">
+			<form
+				action=""
+				id="individual-form"
+				style="display: none"
+				class="card m-4 sign-up-form"
+			>
+				<div class="card-body"></div>
+			</form>
+			<form action="" id="business-form" class="card m-4 sign-up-form">
 				<div class="card-body">
 					<div class="row">
 						<div class="col-md my-2">
@@ -161,15 +181,17 @@
 						<div class="col-md my-2">
 							<div class="form-floating">
 								<input
-									type="text"
 									class="form-control sign-up-input"
-									id="province-sign-up-input"
-									placeholder="Province"
+									id="phone-number-sign-up-input"
+									type="tel"
+									placeholder="Phone Number"
 									required
 								/>
-								<label for="province-sign-up-input">Province</label>
+								<label for="phone-number-sign-up-input">Phone Number</label>
 							</div>
 						</div>
+					</div>
+					<div class="row">
 						<div class="col-md my-2">
 							<div class="form-floating">
 								<input
@@ -192,6 +214,30 @@
 									required
 								/>
 								<label for="barangay-sign-up-input">Barangay</label>
+							</div>
+						</div>
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="text"
+									class="form-control sign-up-input"
+									id="house-number-sign-up-input"
+									placeholder="House number"
+									required
+								/>
+								<label for="house-number-sign-up-input">House number</label>
+							</div>
+						</div>
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									class="form-control sign-up-input"
+									id="street-sign-up-input"
+									type="text"
+									placeholder="Street/Recidency"
+									required
+								/>
+								<label for="street-sign-up-input">Street/Recidency</label>
 							</div>
 						</div>
 					</div>
@@ -293,6 +339,63 @@
 			</form>
 			<div class="w-50 h-50 bg-light my-4 mx-auto" id="reader"></div>
 			<br />
+		</section>
+		<section id="dashboard">
+			<div id="individual-dashboard">
+				<ul class="nav nav-pills justify-content-end m-2">
+					<li class="nav-item">
+						<a
+							class="nav-link active"
+							id="acc-info-dashboard"
+							data-bs-toggle="list"
+							href="#acc-info"
+							>Account info</a
+						>
+					</li>
+					<li class="nav-item">
+						<a
+							class="nav-link"
+							id="acc-logs-dashboard"
+							data-bs-toggle="list"
+							href="#acc-logs"
+							>Account logs</a
+						>
+					</li>
+					<li class="nav-item">
+						<a
+							class="nav-link text-secondary"
+							id="list-settings-list"
+							href=""
+							onclick="signOut()"
+							>Sign out</a
+						>
+					</li>
+				</ul>
+				<div class="tab-content" id="nav-tabContent">
+					<div
+						class="tab-pane fade show active"
+						id="acc-info"
+						role="tabpanel"
+						aria-labelledby="acc-info-dashboard"
+					>
+						<div class="card text-center m-3">
+							<p class="display-4">
+								Welcome <span id="account-name-dashboard"></span>
+							</p>
+						</div>
+					</div>
+					<div
+						class="tab-pane fade"
+						id="acc-logs"
+						role="tabpanel"
+						aria-labelledby="acc-logs-dashboard"
+					>
+						<div class="card text-center m-3">
+							<p class="card-body">visited places</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</section>
 	</body>
 	<script src="src/html5-qrcode.min.js"></script>
