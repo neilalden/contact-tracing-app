@@ -3,11 +3,9 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!-- imports -->
 		<script defer src="/__/firebase/8.2.7/firebase-app.js"></script>
 		<script defer src="/__/firebase/8.2.7/firebase-auth.js"></script>
 		<script defer src="/__/firebase/8.2.7/firebase-firestore.js"></script>
-		<!-- <script defer src="/__/firebase/8.2.7/firebase-functions.js"></script> -->
 		<!-- <script defer src="/__/firebase/8.2.7/firebase-storage.js"></script> -->
 		<script defer src="/__/firebase/init.js?useEmulator=true"></script>
 		<script
@@ -25,7 +23,6 @@
 			rel="stylesheet"
 			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
 		/>
-		<!-- imports -->
 		<link rel="shortcut icon" href="src/user.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="style.css" />
 		<title>Contact Tracing App</title>
@@ -33,8 +30,8 @@
 	<body>
 		<div class="w-100 h-100 loading-screen">
 			<div
-				class="spinner-grow text-primary d-flex justify-content-center loading-screen"
-				style="width: 100px; height: 100px; margin: 20% auto"
+				class="spinner-grow text-primary d-flex justify-content-center mx-auto loading-screen"
+				style="width: 100px; height: 100px; margin-top: 20%"
 				role="status"
 			>
 				<span class="visually-hidden">Loading...</span>
@@ -76,6 +73,7 @@
 						<div class="mx-auto">
 							<button
 								type="button"
+								id="btn-show-sign-up"
 								onclick="showSignUp()"
 								class="btn btn-outline-light p-2"
 							>
@@ -89,7 +87,7 @@
 		<!-- -------------------------------- -->
 		<section id="sign-up-page" class="w-100 h-100">
 			<span
-				onclick="returnHome()"
+				id="sign-up-return-home"
 				style="cursor: pointer; height: 20px; width: 20px; margin: 5px"
 				><i class="bi bi-arrow-left-square-fill fs-3"></i
 			></span>
@@ -131,13 +129,119 @@
 			</div>
 			<form
 				action=""
-				id="individual-form"
+				id="business-form"
 				style="display: none"
 				class="card m-4 sign-up-form"
 			>
-				<div class="card-body"></div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="text"
+									class="form-control sign-up-input-business"
+									id="building-name-sign-up-business"
+									placeholder="Building name/Location"
+									required
+								/>
+								<label for="building-name-sign-up-business"
+									>Building name/Location
+								</label>
+							</div>
+						</div>
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="text"
+									class="form-control sign-up-input-business"
+									id="contact-person-sign-up-business"
+									placeholder="Contact person"
+									required
+								/>
+								<label for="contact-person-sign-up-business"
+									>Contact person</label
+								>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="text"
+									class="form-control sign-up-input-business"
+									id="business-number-sign-up-business"
+									placeholder="Business number"
+									required
+								/>
+								<label for="business-number-sign-up-business"
+									>Business number</label
+								>
+							</div>
+						</div>
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="text"
+									class="form-control sign-up-input-business"
+									id="contact-number-sign-up-business"
+									placeholder="Contact number"
+									required
+								/>
+								<label for="contact-number-sign-up-business"
+									>Contact number</label
+								>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md my-2">
+							<div class="form-floating mb-3">
+								<input
+									type="email"
+									class="form-control sign-up-input-business"
+									id="email-sign-up-business"
+									placeholder="name@example.com"
+								/>
+								<label for="email-sign-up-business">Email address</label>
+							</div>
+						</div>
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="password"
+									class="form-control sign-up-input-business"
+									id="password-sign-up-business"
+									placeholder="Password"
+									required
+								/>
+								<label for="password-sign-up-business">Password</label>
+							</div>
+						</div>
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="password"
+									class="form-control sign-up-input-business"
+									id="confirm-password-sign-up-business"
+									placeholder="Password"
+									required
+								/>
+								<label for="confirm-password-sign-up-business"
+									>Confirm password</label
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+				<button
+					id="btn-sign-up-business"
+					class="btn btn-outline-success btn-lg mx-auto mb-2"
+				>
+					Sign Up!
+				</button>
 			</form>
-			<form action="" id="business-form" class="card m-4 sign-up-form">
+			<form action="" id="individual-form" class="card m-4 sign-up-form">
 				<div class="card-body">
 					<div class="row">
 						<div class="col-md my-2">
@@ -145,11 +249,11 @@
 								<input
 									type="text"
 									class="form-control sign-up-input"
-									id="firstname-sign-up-input"
+									id="firstname-sign-up-individual"
 									placeholder="First name"
 									required
 								/>
-								<label for="firstname-sign-up-input">First name</label>
+								<label for="firstname-sign-up-individual">First name</label>
 							</div>
 						</div>
 						<div class="col-md my-2">
@@ -157,11 +261,11 @@
 								<input
 									type="text"
 									class="form-control sign-up-input"
-									id="lastname-sign-up-input"
+									id="lastname-sign-up-individual"
 									placeholder="Last name"
 									required
 								/>
-								<label for="lastname-sign-up-input">Last name</label>
+								<label for="lastname-sign-up-individual">Last name</label>
 							</div>
 						</div>
 					</div>
@@ -170,24 +274,26 @@
 							<div class="form-floating">
 								<input
 									class="form-control sign-up-input"
-									id="birthday-sign-up-input"
+									id="birthday-sign-up-individual"
 									type="date"
 									placeholder="dd/mm/yyyy"
 									required
 								/>
-								<label for="birthday-sign-up-input">Birthday</label>
+								<label for="birthday-sign-up-individual">Birthday</label>
 							</div>
 						</div>
 						<div class="col-md my-2">
 							<div class="form-floating">
 								<input
 									class="form-control sign-up-input"
-									id="phone-number-sign-up-input"
+									id="phone-number-sign-up-individual"
 									type="tel"
 									placeholder="Phone Number"
 									required
 								/>
-								<label for="phone-number-sign-up-input">Phone Number</label>
+								<label for="phone-number-sign-up-individual"
+									>Phone Number</label
+								>
 							</div>
 						</div>
 					</div>
@@ -197,11 +303,11 @@
 								<input
 									type="text"
 									class="form-control sign-up-input"
-									id="city-sign-up-input"
+									id="city-sign-up-individual"
 									placeholder="City"
 									required
 								/>
-								<label for="city-sign-up-input">City</label>
+								<label for="city-sign-up-individual">City</label>
 							</div>
 						</div>
 						<div class="col-md my-2">
@@ -209,35 +315,37 @@
 								<input
 									type="text"
 									class="form-control sign-up-input"
-									id="barangay-sign-up-input"
+									id="barangay-sign-up-individual"
 									placeholder="Barangay"
 									required
 								/>
-								<label for="barangay-sign-up-input">Barangay</label>
-							</div>
-						</div>
-						<div class="col-md my-2">
-							<div class="form-floating">
-								<input
-									type="text"
-									class="form-control sign-up-input"
-									id="house-number-sign-up-input"
-									placeholder="House number"
-									required
-								/>
-								<label for="house-number-sign-up-input">House number</label>
+								<label for="barangay-sign-up-individual">Barangay</label>
 							</div>
 						</div>
 						<div class="col-md my-2">
 							<div class="form-floating">
 								<input
 									class="form-control sign-up-input"
-									id="street-sign-up-input"
+									id="street-sign-up-individual"
 									type="text"
 									placeholder="Street/Recidency"
 									required
 								/>
-								<label for="street-sign-up-input">Street/Recidency</label>
+								<label for="street-sign-up-individual">Street/Recidency</label>
+							</div>
+						</div>
+						<div class="col-md my-2">
+							<div class="form-floating">
+								<input
+									type="text"
+									class="form-control sign-up-input"
+									id="house-number-sign-up-individual"
+									placeholder="House number"
+									required
+								/>
+								<label for="house-number-sign-up-individual"
+									>House number</label
+								>
 							</div>
 						</div>
 					</div>
@@ -247,10 +355,10 @@
 								<input
 									type="email"
 									class="form-control sign-up-input"
-									id="email-sign-up-input"
+									id="email-sign-up-individual"
 									placeholder="name@example.com"
 								/>
-								<label for="email-sign-up-input">Email address</label>
+								<label for="email-sign-up-individual">Email address</label>
 							</div>
 						</div>
 						<div class="col-md my-2">
@@ -258,11 +366,11 @@
 								<input
 									type="password"
 									class="form-control sign-up-input"
-									id="password-sign-up-input"
+									id="password-sign-up-individual"
 									placeholder="Password"
 									required
 								/>
-								<label for="password-sign-up-input">Password</label>
+								<label for="password-sign-up-individual">Password</label>
 							</div>
 						</div>
 						<div class="col-md my-2">
@@ -270,18 +378,21 @@
 								<input
 									type="password"
 									class="form-control sign-up-input"
-									id="confirm-password-sign-up-input"
+									id="confirm-password-sign-up-individual"
 									placeholder="Password"
 									required
 								/>
-								<label for="confirm-password-sign-up-input"
+								<label for="confirm-password-sign-up-individual"
 									>Confirm password</label
 								>
 							</div>
 						</div>
 					</div>
 				</div>
-				<button id="sign-up-btn" class="btn btn-success btn-lg mx-auto mb-2">
+				<button
+					id="btn-sign-up-individual"
+					class="btn btn-success btn-lg mx-auto mb-2"
+				>
 					Sign Up!
 				</button>
 				<button
@@ -320,7 +431,7 @@
 								<div
 									id="qrcode"
 									class="card mx-auto"
-									style="height: 200px; width: 200px; margin: 40px"
+									style="height: 300px; width: 300px;"
 								></div>
 							</div>
 							<div class="modal-footer">
@@ -328,7 +439,7 @@
 									href="#"
 									class="btn btn-outline-success mx-auto my-2 disabled"
 									id="download-qr-code-btn"
-									style="width: 200px"
+									style="width: 320px"
 									download
 									>Download QR Code</a
 								>
@@ -337,69 +448,30 @@
 					</div>
 				</div>
 			</form>
-			<div class="w-50 h-50 bg-light my-4 mx-auto" id="reader"></div>
-			<br />
 		</section>
 		<section id="dashboard">
-			<div id="individual-dashboard">
-				<ul class="nav nav-pills justify-content-end m-2">
-					<li class="nav-item">
-						<a
-							class="nav-link active"
-							id="acc-info-dashboard"
-							data-bs-toggle="list"
-							href="#acc-info"
-							>Account info</a
-						>
-					</li>
-					<li class="nav-item">
-						<a
-							class="nav-link"
-							id="acc-logs-dashboard"
-							data-bs-toggle="list"
-							href="#acc-logs"
-							>Account logs</a
-						>
-					</li>
-					<li class="nav-item">
-						<a
-							class="nav-link text-secondary"
-							id="list-settings-list"
-							href=""
-							onclick="signOut()"
-							>Sign out</a
-						>
-					</li>
-				</ul>
-				<div class="tab-content" id="nav-tabContent">
-					<div
-						class="tab-pane fade show active"
-						id="acc-info"
-						role="tabpanel"
-						aria-labelledby="acc-info-dashboard"
-					>
-						<div class="card text-center m-3">
-							<p class="display-4">
-								Welcome <span id="account-name-dashboard"></span>
-							</p>
-						</div>
+			<div id="individual-dashboard" class="user-dashboard">
+				<div class="card m-4">
+					<div class="card-title text-center">
+						<p class="display-4" id="first-name-dashboard"></p>
 					</div>
-					<div
-						class="tab-pane fade"
-						id="acc-logs"
-						role="tabpanel"
-						aria-labelledby="acc-logs-dashboard"
-					>
-						<div class="card text-center m-3">
-							<p class="card-body">visited places</p>
-						</div>
+					<button class="btn text-center" onclick="signOut()">sign out</button>
+				</div>
+			</div>
+			<div id="business-dashboard" class="user-dashboard">
+				<div class="card m-4">
+					<div class="card-title text-center">
+						<p id="contact-person-dashboard"></p>
 					</div>
+
+					<div class="w-50 h-50 bg-light my-4 mx-auto" id="reader"></div>
+					<button class="btn text-center" onclick="signOut()">sign out</button>
 				</div>
 			</div>
 		</section>
 	</body>
 	<script src="src/html5-qrcode.min.js"></script>
+	<script src="src/easy.qrcode.js"></script>
 	<script defer src="app.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-	<script src="src/qrcode.min.js"></script>
 </html>

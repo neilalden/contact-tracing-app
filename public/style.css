@@ -45,6 +45,9 @@ section {
 a {
 	text-decoration: none;
 }
+#btn-show-sign-up:hover {
+	color: dodgerblue;
+}
 
 @media screen and (max-height: 450px) {
 	.sidenav {
