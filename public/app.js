@@ -2,18 +2,11 @@ const auth = firebase.auth();
 const firestore = firebase.firestore();
 const usersRef = firestore.collection("users");
 const activityRef = firestore.collection("activity");
+
 const sections = document.getElementsByTagName("section");
 const homePage = document.getElementById("particles-js");
 const signUpPage = document.getElementById("sign-up-page");
 const dashboardPage = document.getElementById("dashboard");
-
-const signUpReturnHome = document.getElementById("sign-up-return-home");
-const emailSignIn = document.getElementById("email-sign-in");
-const passwordSignIn = document.getElementById("password-sign-in");
-const loaders = document.getElementsByClassName("loading-screen");
-const qrCodeDl = document.getElementById("download-qr-code-btn");
-const modalTitle = document.getElementById("exampleModalLabel");
-const showQR = document.getElementById("show-qr-code");
 
 const signUpInput = document.getElementsByClassName("sign-up-input");
 const signUpInputBusiness = document.getElementsByClassName(
@@ -65,14 +58,89 @@ const confirmPasswordSignUpBusiness = document.getElementById(
 	"confirm-password-sign-up-business"
 );
 const btnSignUpBusiness = document.getElementById("btn-sign-up-business");
+const firstnameDashboard = document.getElementById(
+	"firstname-dashboard-individual"
+);
+const lastnameDashboard = document.getElementById(
+	"lastname-dashboard-individual"
+);
+const birthdayDashboard = document.getElementById(
+	"birthday-dashboard-individual"
+);
+const phoneNumberDashboard = document.getElementById(
+	"phone-number-dashboard-individual"
+);
+const cityDashboard = document.getElementById("city-dashboard-individual");
+const brgyDashboard = document.getElementById("barangay-dashboard-individual");
+const streetDashboard = document.getElementById("street-dashboard-individual");
+const houseNumberDashboard = document.getElementById(
+	"house-number-dashboard-individual"
+);
+// /////////////////////////////////////////////
+const businessNumberDashboardBusiness = document.getElementById(
+	"business-number-dashboard-business"
+);
+const buildingNameDashboardBusiness = document.getElementById(
+	"building-name-dashboard-business"
+);
+
+const contactPersonDashboardBusiness = document.getElementById(
+	"contact-person-dashboard-business"
+);
+const contactNumberDashboardBusiness = document.getElementById(
+	"contact-number-dashboard-business"
+);
+
+const signUpReturnHome = document.getElementById("sign-up-return-home");
+const emailSignIn = document.getElementById("email-sign-in");
+const passwordSignIn = document.getElementById("password-sign-in");
+const loaders = document.getElementsByClassName("loading-screen");
+const qrCodeDl = document.getElementById("download-qr-code-btn");
+const modalTitle = document.getElementById("exampleModalLabel");
+const showQRSignUp = document.getElementById("show-qr-code-sign-up");
+const showQRDashboar = document.getElementById("show-qr-code-dashboard");
 
 const userDashboard = document.getElementsByClassName("user-dashboard");
-const firstNameDash = document.getElementById("first-name-dashboard");
-const contactPersonDash = document.getElementById("contact-person-dashboard");
 const canvas = document.getElementsByTagName("canvas");
-// const birthdayValue = new Date(Date.parse(birthdaySignUp.value));
-let businessID = "";
+const logsTableIndividual = document.getElementById("logs-table-individual");
+const logsTableBusiness = document.getElementById("logs-table-business");
+// const prevBusiness = document.getElementById("paginate-prev-business");
+// const nextBusiness = document.getElementById("paginate-next-business");
+var month = new Array();
+month[0] = "January";
+month[1] = "February";
+month[2] = "March";
+month[3] = "April";
+month[4] = "May";
+month[5] = "June";
+month[6] = "July";
+month[7] = "August";
+month[8] = "September";
+month[9] = "October";
+month[10] = "November";
+month[11] = "December";
+var qrcode;
+let businessId = "";
+let buildingName = "";
 let justSignedUp = false;
+auth.onAuthStateChanged((user) => {
+	if (user) {
+		if (!justSignedUp) {
+			showDashboard(user.uid);
+		}
+	} else {
+		businessID = "";
+		buildingName = "";
+		if (qrcode != undefined) {
+			modalTitle.innerText = "No QR";
+			qrcode.clear();
+			qrCodeDl.classList.add("disabled");
+		}
+		returnHome();
+	}
+	removeLoadingScreen();
+});
+
 function handleClick(myRadio) {
 	const ind = document.getElementById("individual-form");
 	const bus = document.getElementById("business-form");
@@ -84,18 +152,6 @@ function handleClick(myRadio) {
 		bus.setAttribute("style", "display: flex !important");
 	}
 }
-auth.onAuthStateChanged((user) => {
-	if (user) {
-		if (!justSignedUp) {
-			showDashboard(user.uid);
-		}
-	} else {
-		businessID = "";
-		returnHome();
-	}
-	removeLoadingScreen();
-});
-
 const showSignUp = () => {
 	emailSignIn.value = "";
 	passwordSignIn.value = "";
@@ -163,13 +219,17 @@ const signOut = () => {
 	auth
 		.signOut()
 		.then(() => {
+			if (qrcode != undefined) {
+				modalTitle.innerText = "No QR";
+				qrcode.clear();
+				qrCodeDl.classList.add("disabled");
+			}
 			returnHome();
 		})
 		.catch((error) => {
 			console.log(error);
 		});
 };
-
 const showDashboard = (userId) => {
 	for (let i = 0; i < sections.length; i++) {
 		sections[i].style.display = "none";
@@ -185,6 +245,7 @@ const showDashboard = (userId) => {
 			const type = user.data().type;
 			document.getElementById(`${type}-dashboard`).style.display = "block";
 			if (type == "individual") {
+				const id = user.data().id;
 				const firstname = user.data().firstname;
 				const lastname = user.data().lastname;
 				const birthday = user.data().birthday;
@@ -196,6 +257,7 @@ const showDashboard = (userId) => {
 				const email = user.data().email;
 				const password = user.data().password;
 				showUserIndividual({
+					id,
 					type,
 					firstname,
 					lastname,
@@ -209,12 +271,23 @@ const showDashboard = (userId) => {
 					password,
 				});
 			} else if (type == "business") {
-				businessID = user.data().id;
+				businessId = user.data().id;
+				buildingName = user.data().buildingName;
 				const businessNumber = user.data().businessNumber;
 				const contactPerson = user.data().contactPerson;
+				const contactNumber = user.data().contactNumber;
 				const email = user.data().email;
 				const password = user.data().password;
-				showUserBusiness({ businessNumber, contactPerson, email, password });
+				showUserBusiness({
+					businessId,
+					type,
+					businessNumber,
+					buildingName,
+					contactPerson,
+					contactNumber,
+					email,
+					password,
+				});
 			} else {
 				console.log("tf is wrong with you?");
 			}
@@ -225,16 +298,143 @@ const showDashboard = (userId) => {
 };
 
 const showUserIndividual = (userData) => {
-	firstNameDash.innerText = userData.firstname;
+	modalTitle.innerText = userData.firstname;
+	makeCode(userData.id);
+	qrCodeDl.classList.remove("disabled");
+	firstnameDashboard.value = userData.firstname;
+	lastnameDashboard.value = userData.lastname;
+	birthdayDashboard.value = userData.birthday;
+	phoneNumberDashboard.value = userData.phoneNumber;
+	cityDashboard.value = userData.city;
+	brgyDashboard.value = userData.barangay;
+	streetDashboard.value = userData.street;
+	houseNumberDashboard.value = userData.houseNumber;
+
+	activityRef
+		.where("individualID", "==", userData.id)
+		.get()
+		.then((querySnapshot) => {
+			querySnapshot.forEach((doc) => {
+				const d = new Date(doc.data().enteredAt.toDate());
+				const m = d.getMonth();
+				const date = d.getDate();
+				const hour = d.getHours();
+				const minute = d.getMinutes();
+
+				logsTableIndividual.innerHTML += `
+					<tr>
+						<td>${month[m]}-${date} </td>
+						<td> ${hour}:${minute}</td>
+						<td colspan="2">${doc.data().buildingName}</td>
+					</tr>
+				`;
+			});
+		});
 };
 
 const showUserBusiness = (userData) => {
-	contactPersonDash.innerText = userData.contactPerson;
-	console.log(userData);
+	businessNumberDashboardBusiness.value = userData.businessNumber;
+	buildingNameDashboardBusiness.value = userData.buildingName;
+	contactPersonDashboardBusiness.value = userData.contactPerson;
+	contactNumberDashboardBusiness.value = userData.contactNumber;
+	document.getElementById("business-logs-header").innerText =
+		userData.buildingName + " logs";
+	activityRef
+		.where("businessID", "==", userData.businessId)
+		.get()
+		.then((querySnapshot) => {
+			querySnapshot.forEach((doc) => {
+				const d = new Date(doc.data().enteredAt.toDate());
+				const m = d.getMonth();
+				const date = d.getDate();
+				const hour = d.getHours();
+				const minute = d.getMinutes();
+
+				logsTableBusiness.innerHTML += `
+					<tr>
+						<td>${month[m]}-${date} </td>
+						<td> ${hour}:${minute}</td>
+						<td colspan="2">${doc.data().personName}</td>
+					</tr>
+				`;
+			});
+		});
 };
+
+// shinanigans section //
+
+function makeCode(data) {
+	const qrCodeContainer = document.getElementById("qrcode");
+	while (qrCodeContainer.firstChild) {
+		qrCodeContainer.removeChild(qrCodeContainer.lastChild);
+	}
+	qrcode = new QRCode(document.getElementById("qrcode"), {
+		text: "",
+		logo: "src/user.png",
+		logoWidth: 80,
+		logoHeight: 80,
+		logoBackgroundTransparent: true,
+		title: "Contact Tracing App",
+		titleFont: "bold 14px Calibri",
+		titleColor: "#000000",
+		titleBackgroundColor: "#ffffff",
+		titleHeight: 30,
+		titleTop: 15,
+		width: 240,
+		height: 240,
+		quietZone: 15,
+		// colorDark: "dodgerblue",
+	});
+	qrcode.makeCode(data);
+}
+
+particlesJS.load("particles-js", "src/particles.json", function () {});
+
+var html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+	fps: 10,
+	qrbox: 300,
+});
+let prevAcc = "";
+html5QrcodeScanner.render((qrCodeMessage) => {
+	if (qrCodeMessage == prevAcc) {
+		console.log("user just been read");
+	} else {
+		prevAcc = qrCodeMessage;
+		const business = businessID;
+		const building = buildingName;
+		usersRef
+			.doc(qrCodeMessage)
+			.get()
+			.then((user) => {
+				if (user.exists) {
+					activityRef
+						.add({
+							enteredAt: firebase.firestore.FieldValue.serverTimestamp(),
+							individualID: user.data().id,
+							personName: `${user.data().firstname} ${user.data().lastname}`,
+							businessID: business,
+							buildingName: building,
+						})
+						.then((docRef) => {
+							alert("scanned succesfully");
+						})
+						.catch((error) => {
+							console.error("Error adding document: ", error);
+						});
+				} else {
+					alert("user not registered");
+				}
+			})
+			.catch((error) => {
+				alert(error.message);
+			});
+	}
+});
 
 // add event listeners
 
+var first = activityRef.orderBy("enteredAt").limit(1);
+var lastVisible = null;
 qrCodeDl.addEventListener("click", (linkElement) => {
 	var img = canvas[1].toDataURL("image/png");
 	linkElement.target.href = img;
@@ -243,8 +443,8 @@ signUpReturnHome.addEventListener("click", () => {
 	if (!qrCodeDl.classList.contains("disabled")) {
 		qrCodeDl.classList.add("disabled");
 	}
-	if (!showQR.classList.contains("visually-hidden")) {
-		showQR.classList.add("visually-hidden");
+	if (!showQRSignUp.classList.contains("visually-hidden")) {
+		showQRSignUp.classList.add("visually-hidden");
 	}
 	for (let i = 0; i < signUpInput.length; i++) {
 		signUpInput[i].value = "";
@@ -313,198 +513,106 @@ btnSignUpBusiness.addEventListener("click", (e) => {
 			});
 	}
 });
+
 btnSignUpIndividual.addEventListener("click", (e) => {
 	e.preventDefault();
 	const accType = "individual";
 	const firstname = firstnameSignUp.value;
 
-	modalTitle.innerText = firstname;
-	makeCode(firstname);
-	showQR.click();
-	qrCodeDl.classList.remove("disabled");
-	showQR.classList.remove("visually-hidden");
-	// const lastname = lastnameSignUp.value;
-	// const birthday = birthdaySignUp.value;
-	// const phoneNumber = phoneNumberSignUp.value;
-	// const city = citySignUp.value;
-	// const barangay = brgySignUp.value;
-	// const street = streetSignUp.value;
-	// const houseNumber = houseNumberSignUp.value;
-	// const email = emailSignUp.value;
-	// const password = passwordSignUp.value;
-	// const confirmPassword = confirmPasswordSignUp.value;
-	// let isOk = true;
+	const lastname = lastnameSignUp.value;
+	const birthday = birthdaySignUp.value;
+	const phoneNumber = phoneNumberSignUp.value;
+	const city = citySignUp.value;
+	const barangay = brgySignUp.value;
+	const street = streetSignUp.value;
+	const houseNumber = houseNumberSignUp.value;
+	const email = emailSignUp.value;
+	const password = passwordSignUp.value;
+	const confirmPassword = confirmPasswordSignUp.value;
+	let isOk = true;
 
-	// for (let i = 0; i < signUpInput.length; i++) {
-	// 	if (signUpInput[i].value == "") {
-	// 		signUpInput[i].classList.remove("is-valid");
-	// 		signUpInput[i].classList.add("is-invalid");
-	// 		isOk = false;
-	// 	} else {
-	// 		signUpInput[i].classList.remove("is-invalid");
-	// 		signUpInput[i].classList.add("is-valid");
-	// 	}
-	// }
-	// if (password != confirmPassword) {
-	// 	alert("confirm password does not match");
-	// 	passwordSignUp.classList.remove("is-valid");
-	// 	confirmPasswordSignUp.classList.remove("is-valid");
-	// 	passwordSignUp.classList.add("is-invalid");
-	// 	confirmPasswordSignUp.classList.add("is-invalid");
-	// } else if (!isOk) {
-	// 	alert("some input fields are still empty");
-	// } else {
-	// 	auth
-	// 		.createUserWithEmailAndPassword(email, password)
-	// 		.then((userCredential) => {
-	// 			const userID = userCredential.user.uid;
-
-	// 			justSignedUp = true;
-	// 			const data = {
-	// 				id: userID,
-	// 				type: accType,
-	// 				firstname: firstname,
-	// 				lastname: lastname,
-	// 				birthday: birthday,
-	// 				phoneNumber: phoneNumber,
-	// 				city: city,
-	// 				barangay: barangay,
-	// 				street: street,
-	// 				houseNumber: houseNumber,
-	// 				email: email,
-	// 				password: password,
-	// 			};
-	// 			usersRef
-	// 				.doc(userID)
-	// 				.set(data)
-	// 				.then((response) => {
-	// 					console.log("evrythings good in the hood");
-	// 				})
-	// 				.catch((error) => {
-	// 					console.log("weee wooo weee wooo");
-	// 				});
-
-	// 			modalTitle.innerText = firstname;
-	// 			makeCode(userID);
-	// 			showQR.click();
-	// 			qrCodeDl.classList.remove("disabled");
-	// 			showQR.classList.remove("visually-hidden");
-	// 			for (let i = 0; i < signUpInput.length; i++) {
-	// 				signUpInput[i].value = "";
-	// 				signUpInput[i].classList.remove("is-valid");
-	// 				signUpInput[i].classList.remove("is-invalid");
-	// 			}
-	// 		})
-	// 		.catch((error) => {
-	// 			var errorCode = error.code;
-	// 			var errorMessage = error.message;
-	// 			console.log(error);
-	// 			console.log(errorCode);
-	// 			console.log(errorMessage);
-	// 		});
-	// }
-});
-
-// shinanigans section //
-
-function makeCode(data) {
-	const qrCodeContainer = document.getElementById("qrcode");
-	while (qrCodeContainer.firstChild) {
-		qrCodeContainer.removeChild(qrCodeContainer.lastChild);
+	for (let i = 0; i < signUpInput.length; i++) {
+		if (signUpInput[i].value == "") {
+			signUpInput[i].classList.remove("is-valid");
+			signUpInput[i].classList.add("is-invalid");
+			isOk = false;
+		} else {
+			signUpInput[i].classList.remove("is-invalid");
+			signUpInput[i].classList.add("is-valid");
+		}
 	}
-	var qrcode = new QRCode(document.getElementById("qrcode"), {
-		text: "",
-		logo: "src/user.png",
-		logoWidth: 80,
-		logoHeight: 80,
-		logoBackgroundTransparent: true,
-		title: "Contact Tracing App",
-		titleFont: "bold 14px Calibri",
-		titleColor: "#000000",
-		titleBackgroundColor: "#ffffff",
-		titleHeight: 30,
-		titleTop: 15,
-		width: 240,
-		height: 240,
-		quietZone: 15,
-		// colorDark: "dodgerblue",
-	});
-	qrcode.makeCode(data);
-}
+	if (password != confirmPassword) {
+		alert("confirm password does not match");
+		passwordSignUp.classList.remove("is-valid");
+		confirmPasswordSignUp.classList.remove("is-valid");
+		passwordSignUp.classList.add("is-invalid");
+		confirmPasswordSignUp.classList.add("is-invalid");
+	} else if (!isOk) {
+		alert("some input fields are still empty");
+	} else {
+		auth
+			.createUserWithEmailAndPassword(email, password)
+			.then((userCredential) => {
+				const userID = userCredential.user.uid;
 
-particlesJS.load("particles-js", "src/particles.json", function () {});
-
-var html5QrcodeScanner = new Html5QrcodeScanner("reader", {
-	fps: 10,
-	qrbox: 300,
-});
-html5QrcodeScanner.render((qrCodeMessage) => {
-	const date = new Date();
-	const entryDate =
-		date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-	const entryTime = date.getHours() + ":" + date.getMinutes();
-	const individual = qrCodeMessage;
-	const business = businessID;
-	console.log(qrCodeMessage);
-	usersRef
-		.doc(qrCodeMessage)
-		.get()
-		.then((user) => {
-			if (user.exists) {
-				activityRef
-					.add({
-						entryDate,
-						entryTime,
-						individualID: individual,
-						businessID: business,
-					})
-					.then((docRef) => {
-						alert("scanned succesfully");
+				justSignedUp = true;
+				const data = {
+					id: userID,
+					type: accType,
+					firstname: firstname,
+					lastname: lastname,
+					birthday: birthday,
+					phoneNumber: phoneNumber,
+					city: city,
+					barangay: barangay,
+					street: street,
+					houseNumber: houseNumber,
+					email: email,
+					password: password,
+				};
+				usersRef
+					.doc(userID)
+					.set(data)
+					.then((response) => {
+						console.log("evrythings good in the hood");
 					})
 					.catch((error) => {
-						console.error("Error adding document: ", error);
+						console.log("weee wooo weee wooo");
 					});
-			} else {
-				alert("qr code does not exist");
-			}
-		})
-		.catch((error) => {
-			alert(error.message);
-		});
+
+				modalTitle.innerText = firstname;
+				makeCode(userID);
+				showQRSignUp.click();
+				qrCodeDl.classList.remove("disabled");
+				showQRSignUp.classList.remove("visually-hidden");
+
+				for (let i = 0; i < signUpInput.length; i++) {
+					signUpInput[i].value = "";
+					signUpInput[i].classList.remove("is-valid");
+					signUpInput[i].classList.remove("is-invalid");
+				}
+			})
+			.catch((error) => {
+				var errorCode = error.code;
+				var errorMessage = error.message;
+				console.log(error);
+				console.log(errorCode);
+				console.log(errorMessage);
+			});
+	}
 });
-// function onScanSuccess(qrCodeMessage) {
-// 	const date = new Date();
-// 	const entryDate =
-// 		date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-// 	const entryTime = date.getHours() + ":" + date.getMinutes();
-// 	const individual = qrCodeMessage;
-// 	const business = businessID;
-// 	console.log(qrCodeMessage);
-// 	usersRef
-// 		.doc(qrCodeMessage)
+
+// nextBusiness.addEventListener("click", () => {
+// 	return first
+// 		.startAfter(lastVisible || 0)
 // 		.get()
-// 		.then((user) => {
-// 			if (user.exists) {
-// 				activityRef
-// 					.add({
-// 						entryDate,
-// 						entryTime,
-// 						individualID: individual,
-// 						businessID: business,
-// 					})
-// 					.then((docRef) => {
-// 						alert("scanned succesfully");
-// 					})
-// 					.catch((error) => {
-// 						console.error("Error adding document: ", error);
-// 					});
-// 			} else {
-// 				alert("qr code does not exist");
+// 		.then((documentSnapshots) => {
+// 			lastVisible = documentSnapshots.docs[documentSnapshots.docs.length - 1];
+// 			for (let i = 0; i < documentSnapshots.docs.length; i++) {
+// 				console.log(documentSnapshots.docs[i].data());
 // 			}
 // 		})
-// 		.catch((error) => {
-// 			alert(error.message);
+// 		.catch((e) => {
+// 			console.log(e);
 // 		});
-
-// 	// html5QrcodeScanner.clear();
-// }
+// });

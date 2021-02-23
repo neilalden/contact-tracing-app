@@ -13,6 +13,7 @@
 			integrity="sha384-nsg8ua9HAw1y0W1btsyWgBklPnCUAFLuTMS2G72MMONqmOymq585AcH49TLBQObG"
 			crossorigin="anonymous"
 		></script>
+
 		<link
 			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
 			rel="stylesheet"
@@ -28,7 +29,10 @@
 		<title>Contact Tracing App</title>
 	</head>
 	<body>
-		<div class="w-100 h-100 loading-screen">
+		<div
+			class="w-100 h-100 loading-screen"
+			style="overflow-y: hidden !important"
+		>
 			<div
 				class="spinner-grow text-primary d-flex justify-content-center mx-auto loading-screen"
 				style="width: 100px; height: 100px; margin-top: 20%"
@@ -37,7 +41,7 @@
 				<span class="visually-hidden">Loading...</span>
 			</div>
 		</div>
-		<section id="particles-js">
+		<section id="particles-js" style="display: none">
 			<div id="sign-in-container" class="card position-absolute">
 				<p class="display-4 py-4 text-light">Contact Tracing App</p>
 				<form action="" class="w-75 mx-auto">
@@ -85,7 +89,7 @@
 			</div>
 		</section>
 		<!-- -------------------------------- -->
-		<section id="sign-up-page" class="w-100 h-100">
+		<section id="sign-up-page" class="w-100 h-100" style="display: none">
 			<span
 				id="sign-up-return-home"
 				style="cursor: pointer; height: 20px; width: 20px; margin: 5px"
@@ -397,7 +401,7 @@
 				</button>
 				<button
 					type="button"
-					id="show-qr-code"
+					id="show-qr-code-sign-up"
 					class="btn btn-link shadow-none mx-auto visually-hidden"
 					style="width: 200px !important"
 					data-bs-toggle="modal"
@@ -405,70 +409,341 @@
 				>
 					Show QR Code
 				</button>
-				<div
-					class="modal fade"
-					id="exampleModal"
-					tabindex="-1"
-					aria-labelledby="exampleModalLabel"
-					aria-hidden="true"
-					data-bs-backdrop="static"
-					data-bs-keyboard="false"
-				>
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="exampleModalLabel">
-									No one signed up yet
-								</h5>
-								<button
-									type="button"
-									class="btn-close"
-									data-bs-dismiss="modal"
-									aria-label="Close"
-								></button>
-							</div>
-							<div class="modal-body">
-								<div
-									id="qrcode"
-									class="card mx-auto"
-									style="height: 300px; width: 300px;"
-								></div>
-							</div>
-							<div class="modal-footer">
-								<a
-									href="#"
-									class="btn btn-outline-success mx-auto my-2 disabled"
-									id="download-qr-code-btn"
-									style="width: 320px"
-									download
-									>Download QR Code</a
-								>
-							</div>
-						</div>
-					</div>
-				</div>
 			</form>
 		</section>
-		<section id="dashboard">
+		<section id="dashboard" style="display: none">
 			<div id="individual-dashboard" class="user-dashboard">
 				<div class="card m-4">
 					<div class="card-title text-center">
-						<p class="display-4" id="first-name-dashboard"></p>
+						<p class="display-6 m-3">Profile info</p>
+						<button class="btn btn-outline-dark m-1" onclick="signOut()">
+							sign out
+						</button>
+
+						<button
+							type="button"
+							id="show-qr-code-dashboar"
+							class="btn btn-outline-primary shadow-none m-1"
+							data-bs-toggle="modal"
+							data-bs-target="#exampleModal"
+						>
+							Show QR Code
+						</button>
 					</div>
-					<button class="btn text-center" onclick="signOut()">sign out</button>
+					<div class="card-body">
+						<form
+							action=""
+							id="dashboard-individual-form"
+							class="m-4 dashboard-form"
+						>
+							<div class="row">
+								<div class="col-md my-2">
+									<div class="form-floating">
+										<input
+											type="text"
+											class="form-control dashboard-input"
+											id="firstname-dashboard-individual"
+											placeholder="First name"
+											required
+											disabled
+										/>
+										<label for="firstname-dashboard-individual"
+											>First name</label
+										>
+									</div>
+								</div>
+								<div class="col-md my-2">
+									<div class="form-floating">
+										<input
+											type="text"
+											class="form-control dashboard-input"
+											id="lastname-dashboard-individual"
+											placeholder="Last name"
+											required
+											disabled
+										/>
+										<label for="lastname-dashboard-individual">Last name</label>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md my-2">
+									<div class="form-floating">
+										<input
+											class="form-control dashboard-input"
+											id="birthday-dashboard-individual"
+											type="date"
+											placeholder="dd/mm/yyyy"
+											required
+											disabled
+										/>
+										<label for="birthday-dashboard-individual">Birthday</label>
+									</div>
+								</div>
+								<div class="col-md my-2">
+									<div class="form-floating">
+										<input
+											class="form-control dashboard-input"
+											id="phone-number-dashboard-individual"
+											type="tel"
+											placeholder="Phone Number"
+											required
+											disabled
+										/>
+										<label for="phone-number-dashboard-individual"
+											>Phone Number</label
+										>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md my-2">
+									<div class="form-floating">
+										<input
+											type="text"
+											class="form-control dashboard-input"
+											id="city-dashboard-individual"
+											placeholder="City"
+											required
+											disabled
+										/>
+										<label for="city-dashboard-individual">City</label>
+									</div>
+								</div>
+								<div class="col-md my-2">
+									<div class="form-floating">
+										<input
+											type="text"
+											class="form-control dashboard-input"
+											id="barangay-dashboard-individual"
+											placeholder="Barangay"
+											required
+											disabled
+										/>
+										<label for="barangay-dashboard-individual">Barangay</label>
+									</div>
+								</div>
+								<div class="col-md my-2">
+									<div class="form-floating">
+										<input
+											class="form-control dashboard-input"
+											id="street-dashboard-individual"
+											type="text"
+											placeholder="Street/Recidency"
+											required
+											disabled
+										/>
+										<label for="street-dashboard-individual"
+											>Street/Recidency</label
+										>
+									</div>
+								</div>
+								<div class="col-md my-2">
+									<div class="form-floating">
+										<input
+											type="text"
+											class="form-control dashboard-input"
+											id="house-number-dashboard-individual"
+											placeholder="House number"
+											required
+											disabled
+										/>
+										<label for="house-number-dashboard-individual"
+											>House number</label
+										>
+									</div>
+								</div>
+							</div>
+							<div class="d-flex justify-content-center mx-auto">
+								<button class="btn btn-warning btn-lg text-center m-2" disabled>
+									update
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="card m-4">
+					<div class="card-title text-center">
+						<p class="display-6">Your activity logs</p>
+					</div>
+					<div class="card-body">
+						<table class="table table-striped table-hover">
+							<thead>
+								<tr>
+									<th scope="col">Date entered</th>
+									<th scope="col">Time entered</th>
+									<th scope="col" colspan="2">Place name</th>
+								</tr>
+							</thead>
+							<tbody id="logs-table-individual"></tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 			<div id="business-dashboard" class="user-dashboard">
+				<div class="row m-2">
+					<div class="col-lg" style="overflow-x: hidden !important">
+						<div
+							id="reader"
+							class="mx-auto card"
+							style="min-width: 320px; min-height: 320px"
+						></div>
+					</div>
+					<div class="col-lg" style="overflow-x: hidden !important">
+						<div class="card" id="business-logs">
+							<div class="card-title">
+								<p class="text-center display-6" id="business-logs-header"></p>
+							</div>
+							<div class="card-body">
+								<table class="table table-striped table-hover">
+									<thead>
+										<tr>
+											<th scope="col">Date entered</th>
+											<th scope="col">Time entered</th>
+											<th scope="col" colspan="2">Person name</th>
+										</tr>
+									</thead>
+									<tbody id="logs-table-business"></tbody>
+								</table>
+							</div>
+							<!-- <button id="paginate-next-business" class="btn btn-link">
+								next
+							</button>
+							<button id="paginate-prev-business" class="btn btn-link">
+								prev
+							</button> -->
+						</div>
+					</div>
+				</div>
 				<div class="card m-4">
 					<div class="card-title text-center">
-						<p id="contact-person-dashboard"></p>
+						<p class="display-6 m-3">Account info</p>
+						<button class="btn btn-outline-dark" onclick="signOut()">
+							sign out
+						</button>
 					</div>
+					<div class="card-body">
+						<form
+							action=""
+							id="dashboard-business-form"
+							class="m-4 dashboard-form"
+						>
+							<div class="row">
+								<div class="col-md my-2">
+									<div class="form-floating">
+										<input
+											type="text"
+											class="form-control dashboard-input-business"
+											id="building-name-dashboard-business"
+											placeholder="Building name/Location"
+											required
+											disabled
+										/>
+										<label for="building-name-dashboard-business"
+											>Building name/Location
+										</label>
+									</div>
+								</div>
+								<div class="col-md my-2">
+									<div class="form-floating">
+										<input
+											type="text"
+											class="form-control dashboard-input-business"
+											id="contact-person-dashboard-business"
+											placeholder="Contact person"
+											required
+											disabled
+										/>
+										<label for="contact-person-dashboard-business"
+											>Contact person</label
+										>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md my-2">
+									<div class="form-floating">
+										<input
+											type="text"
+											class="form-control dashboard-input-business"
+											id="business-number-dashboard-business"
+											placeholder="Business number"
+											required
+											disabled
+										/>
+										<label for="business-number-dashboard-business"
+											>Business number</label
+										>
+									</div>
+								</div>
+								<div class="col-md my-2">
+									<div class="form-floating">
+										<input
+											type="text"
+											class="form-control dashboard-input-business"
+											id="contact-number-dashboard-business"
+											placeholder="Contact number"
+											required
+											disabled
+										/>
+										<label for="contact-number-dashboard-business"
+											>Contact number</label
+										>
+									</div>
+								</div>
+							</div>
 
-					<div class="w-50 h-50 bg-light my-4 mx-auto" id="reader"></div>
-					<button class="btn text-center" onclick="signOut()">sign out</button>
+							<div class="d-flex justify-content-center mx-auto">
+								<button class="btn btn-warning btn-lg text-center m-2" disabled>
+									update
+								</button>
+							</div>
+						</form>
+					</div>
 				</div>
+				<br>
 			</div>
 		</section>
+		<div
+			class="modal fade"
+			id="exampleModal"
+			tabindex="-1"
+			aria-labelledby="exampleModalLabel"
+			aria-hidden="true"
+			data-bs-backdrop="static"
+			data-bs-keyboard="false"
+		>
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">No QR</h5>
+						<button
+							type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close"
+						></button>
+					</div>
+					<div class="modal-body">
+						<div
+							id="qrcode"
+							class="card mx-auto"
+							style="height: 300px; width: 300px"
+						></div>
+					</div>
+					<div class="modal-footer">
+						<a
+							href="#"
+							class="btn btn-outline-success mx-auto my-2 disabled"
+							id="download-qr-code-btn"
+							style="width: 320px"
+							download
+							>Download QR Code</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
 	</body>
 	<script src="src/html5-qrcode.min.js"></script>
 	<script src="src/easy.qrcode.js"></script>
