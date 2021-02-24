@@ -177,9 +177,12 @@ const returnHome = () => {
 	for (let i = 0; i < sections.length; i++) {
 		sections[i].style.display = "none";
 	}
-
-	homePage.style.display = "block";
-	particlesJS.load("particles-js", "src/particles.json", function () {});
+	if (justSignedUp) {
+		location.reload();
+	} else {
+		homePage.style.display = "block";
+		particlesJS.load("particles-js", "src/particles.json", function () {});
+	}
 };
 
 const signIn = () => {
@@ -296,7 +299,6 @@ const showDashboard = (userId) => {
 			console.log("Error getting document:", error);
 		});
 };
-
 const showUserIndividual = (userData) => {
 	modalTitle.innerText = userData.firstname;
 	makeCode(userData.id);
@@ -312,22 +314,26 @@ const showUserIndividual = (userData) => {
 
 	activityRef
 		.where("individualID", "==", userData.id)
+		.orderBy("enteredAt", "desc")
 		.get()
 		.then((querySnapshot) => {
 			querySnapshot.forEach((doc) => {
 				const d = new Date(doc.data().enteredAt.toDate());
 				const m = d.getMonth();
-				const date = d.getDate();
-				const hour = d.getHours();
-				const minute = d.getMinutes();
-
-				logsTableIndividual.innerHTML += `
-					<tr>
-						<td>${month[m]}-${date} </td>
-						<td> ${hour}:${minute}</td>
-						<td colspan="2">${doc.data().buildingName}</td>
-					</tr>
-				`;
+				const date = d.getDate().toString();
+				const hour = d.getHours().toString();
+				const minute = d.getMinutes().toString();
+				const row = document.createElement("tr");
+				const tableDataDate = document.createElement("td");
+				const tableDataTime = document.createElement("td");
+				const tableDataPersonName = document.createElement("td");
+				tableDataDate.innerText = month[m] + "-" + date;
+				tableDataTime.innerText = hour + ":" + minute;
+				tableDataPersonName.innerText = doc.data().buildingName;
+				row.appendChild(tableDataDate);
+				row.appendChild(tableDataTime);
+				row.appendChild(tableDataPersonName);
+				logsTableIndividual.appendChild(row);
 			});
 		});
 };
@@ -339,8 +345,16 @@ const showUserBusiness = (userData) => {
 	contactNumberDashboardBusiness.value = userData.contactNumber;
 	document.getElementById("business-logs-header").innerText =
 		userData.buildingName + " logs";
+	let snapid = userData.businessId;
+	scanSuccess(snapid);
+};
+const scanSuccess = (snapid) => {
+	while (logsTableBusiness.firstChild) {
+		logsTableBusiness.removeChild(logsTableBusiness.lastChild);
+	}
 	activityRef
-		.where("businessID", "==", userData.businessId)
+		.where("businessID", "==", snapid)
+		.orderBy("enteredAt", "desc")
 		.get()
 		.then((querySnapshot) => {
 			querySnapshot.forEach((doc) => {
@@ -348,19 +362,22 @@ const showUserBusiness = (userData) => {
 				const m = d.getMonth();
 				const date = d.getDate();
 				const hour = d.getHours();
-				const minute = d.getMinutes();
-
-				logsTableBusiness.innerHTML += `
-					<tr>
-						<td>${month[m]}-${date} </td>
-						<td> ${hour}:${minute}</td>
-						<td colspan="2">${doc.data().personName}</td>
-					</tr>
-				`;
+				const minute =
+					d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
+				const row = document.createElement("tr");
+				const tableDataDate = document.createElement("td");
+				const tableDataTime = document.createElement("td");
+				const tableDataPersonName = document.createElement("td");
+				tableDataDate.innerText = month[m] + "-" + date;
+				tableDataTime.innerText = hour + ":" + minute;
+				tableDataPersonName.innerText = doc.data().personName;
+				row.appendChild(tableDataDate);
+				row.appendChild(tableDataTime);
+				row.appendChild(tableDataPersonName);
+				logsTableBusiness.appendChild(row);
 			});
 		});
 };
-
 // shinanigans section //
 
 function makeCode(data) {
@@ -397,10 +414,10 @@ var html5QrcodeScanner = new Html5QrcodeScanner("reader", {
 let prevAcc = "";
 html5QrcodeScanner.render((qrCodeMessage) => {
 	if (qrCodeMessage == prevAcc) {
-		console.log("user just been read");
+		console.log("qr just been read");
 	} else {
 		prevAcc = qrCodeMessage;
-		const business = businessID;
+		const business = businessId;
 		const building = buildingName;
 		usersRef
 			.doc(qrCodeMessage)
@@ -417,6 +434,7 @@ html5QrcodeScanner.render((qrCodeMessage) => {
 						})
 						.then((docRef) => {
 							alert("scanned succesfully");
+							scanSuccess(business);
 						})
 						.catch((error) => {
 							console.error("Error adding document: ", error);
@@ -574,7 +592,7 @@ btnSignUpIndividual.addEventListener("click", (e) => {
 					.doc(userID)
 					.set(data)
 					.then((response) => {
-						console.log("evrythings good in the hood");
+						console.log(userID);
 					})
 					.catch((error) => {
 						console.log("weee wooo weee wooo");
